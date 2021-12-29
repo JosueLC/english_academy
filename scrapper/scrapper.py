@@ -7,13 +7,19 @@ import lxml.html as html
 from urllib.parse import urljoin
 import re
 
+URL_HOME = 'https://www.eslfast.com/'
+
 XPATH_LINK_TO_COURSE = '//section[@class="beginners"]//a/@href'
 XPATH_LINK_TO_CLASSES = '//section[starts-with(@class,"beginners")]//a/@href'
 XPATH_LINK_TO_AUDIOS = '//audio/@src'
-URL_HOME = 'https://www.eslfast.com/'
+XPATH_LINK_TO_TEXTS = '//p[@class="timed"]/text()'
+
 INDEX_REGEX = re.compile(r'index\d+\.htm')
+NEWLINE_CHARS = ["\n","\n\n"]
+
 list_of_links = []
 links_to_audios = []
+texts_to_classes = {}
 
 def parse_home():
     try:
@@ -25,9 +31,7 @@ def parse_home():
             for link in links:
                 if link not in list_of_links:
                     list_of_links.append(link)
-                    print(link)
                     parse_course(link)
-                    print('-'*20)
         else:
             raise ValueError('Error: {}'.format(response.status_code))
     except ValueError as e:
@@ -50,7 +54,6 @@ def parse_course(url):
                     if INDEX_REGEX.search(link):
                         parse_course(full_url)
                     else:
-                        print(full_url)
                         parse_class(full_url)
         else:
             raise ValueError('Error: {}'.format(response.status_code))
@@ -69,8 +72,7 @@ def parse_class(url):
                 if full_url not in list_of_links:
                     list_of_links.append(full_url)
                     links_to_audios.append(full_url)
-                    print('#'*20)
-                    print(full_url)
+                    texts_to_classes[full_url] = [p for p in parsed.xpath(XPATH_LINK_TO_TEXTS) if p not in NEWLINE_CHARS]
         else:
             raise ValueError('Error: {}'.format(response.status_code))
     except ValueError as e:
