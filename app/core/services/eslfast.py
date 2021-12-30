@@ -2,44 +2,47 @@
 # Links to courses with xPath: //section[@class='beginners']//a/@href
 
 #Dependencies
+import re
 import requests
+import asyncio
 import lxml.html as html
 from urllib.parse import urljoin
-import re
+from typing import List, Tuple
+from pydantic import AnyHttpUrl
 
+# Scrapping services to ESLFast website
+
+#Constants
 URL_HOME = 'https://www.eslfast.com/'
-
 XPATH_LINK_TO_COURSE = '//section[@class="beginners"]//a/@href'
 XPATH_LINK_TO_CLASSES = '//section[starts-with(@class,"beginners")]//a/@href'
 XPATH_LINK_TO_AUDIOS = '//audio/@src'
 XPATH_LINK_TO_TEXTS = '//p[@class="timed"]/text()'
-
 INDEX_REGEX = re.compile(r'index\d+\.htm')
 NEWLINE_CHARS = ["\n","\n\n"]
 
-list_of_links = []
-links_to_audios = []
-texts_to_classes = {}
-
-def parse_home():
+async def parse_home() ->List[AnyHttpUrl]:
+    courses_links = List();
     try:
-        response = requests.get(URL_HOME)
+        await response = requests.get(URL_HOME)
         if response.status_code == 200:
             home = response.content.decode('utf-8')
             parsed = html.fromstring(home)
             links = parsed.xpath(XPATH_LINK_TO_COURSE)
             for link in links:
-                if link not in list_of_links:
-                    list_of_links.append(link)
-                    parse_course(link)
+                if link not in courses_links:
+                    courses_links.append(link)
         else:
             raise ValueError('Error: {}'.format(response.status_code))
     except ValueError as e:
         print(e)
+    finally:
+        return courses_links
 
-def parse_course(url):
+def parse_course(url) -> List[AnyHttpUrl]:
+    classes_links = List();
     try:
-        response = requests.get(url)
+        await response = requests.get(url)
         if response.status_code == 200:
             course = response.content
             parsed = html.fromstring(course)
@@ -49,31 +52,30 @@ def parse_course(url):
                 #if regex is ok, call again parse_course with the joined url to the link
                 #else print the link joined with the url
                 full_url = urljoin(url, link)
-                if full_url not in list_of_links:
-                    list_of_links.append(full_url)
-                    if INDEX_REGEX.search(link):
-                        parse_course(full_url)
-                    else:
-                        parse_class(full_url)
+                if INDEX_REGEX.search(link):
+                    additional_class = asyncio.run(parse_course(full_url))
+                    classes_links.append(*additional_class)
+                elif full_url not in classes_links:
+                    classes_links.append(full_url)
         else:
             raise ValueError('Error: {}'.format(response.status_code))
     except ValueError as e:
         print(e)
+    finally:
+        return classes_links
 
-def parse_class(url):
+async def parse_class(url) -> Tuple[AnyHttpUrl,List[str]]:
     try:
-        response = requests.get(url)
+        await response = requests.get(url)
         if response.status_code == 200:
             course = response.content
             parsed = html.fromstring(course)
             links = parsed.xpath(XPATH_LINK_TO_AUDIOS)
-            for link in links:
-                full_url = urljoin(url, link)
-                if full_url not in list_of_links:
-                    list_of_links.append(full_url)
-                    links_to_audios.append(full_url)
-                    texts_to_classes[full_url] = [p for p in parsed.xpath(XPATH_LINK_TO_TEXTS) if p not in NEWLINE_CHARS]
+            full_url = urljoin(url, links[0])
+            texts_class = [p for p in parsed.xpath(XPATH_LINK_TO_TEXTS) if p not in NEWLINE_CHARS]
+            return full_url,texts_class
         else:
             raise ValueError('Error: {}'.format(response.status_code))
     except ValueError as e:
         print(e)
+        return "",[]
