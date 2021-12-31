@@ -21,10 +21,10 @@ XPATH_LINK_TO_TEXTS = '//p[@class="timed"]/text()'
 INDEX_REGEX = re.compile(r'index\d+\.htm')
 NEWLINE_CHARS = ["\n","\n\n"]
 
-async def parse_home() ->List[AnyHttpUrl]:
-    courses_links = List();
+def parse_home() ->List[AnyHttpUrl]:
+    courses_links = list();
     try:
-        await response = requests.get(URL_HOME)
+        response = requests.get(URL_HOME)
         if response.status_code == 200:
             home = response.content.decode('utf-8')
             parsed = html.fromstring(home)
@@ -40,9 +40,9 @@ async def parse_home() ->List[AnyHttpUrl]:
         return courses_links
 
 def parse_course(url) -> List[AnyHttpUrl]:
-    classes_links = List();
+    classes_links = list();
     try:
-        await response = requests.get(url)
+        response = requests.get(url)
         if response.status_code == 200:
             course = response.content
             parsed = html.fromstring(course)
@@ -64,9 +64,9 @@ def parse_course(url) -> List[AnyHttpUrl]:
     finally:
         return classes_links
 
-async def parse_class(url) -> Tuple[AnyHttpUrl,List[str]]:
+def parse_class(url) -> Tuple[AnyHttpUrl,List[str]]:
     try:
-        await response = requests.get(url)
+        response = requests.get(url)
         if response.status_code == 200:
             course = response.content
             parsed = html.fromstring(course)
