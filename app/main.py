@@ -1,7 +1,9 @@
 # Main project file
 
 # Import packages
+import os
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
@@ -32,3 +34,7 @@ routers = {
 
 for route, router in routers.items():
     app.include_router(router,prefix=route)
+
+#Mount assets folder as static directory
+path = os.path.join(os.path.dirname(__file__), './core/assets/audios')
+#app.mount('/audio',StaticFiles(directory=path),name='audio')
