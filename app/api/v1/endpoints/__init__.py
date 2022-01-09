@@ -1,3 +1,3 @@
-from .course_end import router as course
+#from module import apirouter_object as module_name
 
-__all__ = ["course"]
+#__all__ = ["module names"]

@@ -4,13 +4,16 @@
 #Dependencies
 import json
 import os
+import string
+import sys
 import requests
 import lxml.html as html
 from urllib.parse import urljoin
 import nltk
+from string import punctuation
+import xpaths
 nltk.download('punkt')
 
-import xpaths
 
 URL_HOME = 'https://www.eslfast.com/'
 ASSETS_PATH = os.path.join(os.path.dirname(__file__),'../../assets/')
@@ -31,8 +34,9 @@ def get_parsed_html(url:str,xpath:str) -> list:
         return list()
 
 def parse_home():
+    print('Starting scrapper...')
     courses = get_parsed_html(URL_HOME,xpaths.XPATH_LINK_TO_COURSES)
-    for course in [courses[0]]:
+    for course in courses:
         #get link_url from link
         link_url = course.attrib['href']
         if link_url not in visited_links:
@@ -40,23 +44,29 @@ def parse_home():
                 course_name = course[1][0].text_content()
             else:
                 course_name = course[0][1].text_content()
+            print('>> Parsing course: {}'.format(course_name))
             visited_links.append(link_url)
             parse_course(link_url,course_name)
             update_stats()
 
 def parse_course(url:str,course_name:str):
     classes = get_parsed_html(url,xpaths.XPATH_LINK_TO_CLASSES)
+    classes = sorted(classes,key=lambda x: x.attrib['href'])
     for link in classes:
         #Check if the link finishes with index(number).htm using regex.
         #if regex is ok, call again parse_course with the joined url to the link
         #else print the link joined with the url
-        full_url = urljoin(url, link.attrib['href'])
-        if full_url not in visited_links:
-            classes.append(full_url)
-            visited_links.append(full_url)
-            if not parse_class(full_url):
-                parse_course(full_url,course_name)
-    #classes[course_name] = classes
+        try:
+            full_url = urljoin(url, link.attrib['href'])
+            if full_url not in visited_links:
+                visited_links.append(full_url)
+                if not parse_class(full_url):
+                    #print('recursive: {}'.format(full_url))
+                    parse_course(full_url,course_name)
+        except Exception as e:
+            print(e.with_traceback(sys.exc_info()[2]))
+            print('link: {}'.format(link))
+            print(type(link))
 
 def parse_class(url) -> bool:
     filename = '-'.join(url.split('/')[-2:]).split('.')[0]
@@ -93,22 +103,29 @@ def download_audio(url,text_filename):
 
 def format_texts(url:str,xpaths:list, filename) -> list:
     content = list()
+    class_content = list()
     for xpath in xpaths:
         content = get_parsed_html(url,xpath)
         if len(content) > 0:
             class_content = [s for s in content if s.split()]
             class_content = [' '.join(s.split()) for s in class_content]
             class_content = [x for t in [nltk.sent_tokenize(s) for s in class_content] for x in t]
-            #Save statistics
-            flatten = ' '.join(class_content).split()
-            set_words = set(flatten)
-            text_class_compose[filename] = {
-                'words': len(flatten),
-                'unique_words': len(set_words),
-                'sentences': len(class_content),
-                'density': len(flatten)/len(set_words)
-            }
-            break
+            if any(s[-1] not in punctuation for s in class_content):
+                joined_content = ' '.join(class_content)
+                class_content = nltk.sent_tokenize(joined_content)
+            if len(class_content) > 0:
+                #Save statistics
+                tokens = [w for w in nltk.word_tokenize(' '.join(class_content)) if w not in string.punctuation]
+                set_words = set(tokens)
+                text_class_compose[filename] = {
+                    'words': len(tokens),
+                    'unique_words': len(set_words),
+                    'sentences': len(class_content),
+                    'richness': len(set_words)/len(tokens)
+                }
+                break
+            else:
+                print('No content found for {} in {}'.format(xpath,url))
     return class_content
 
 def save_to_file(l:list, filepath:str):
@@ -132,13 +149,33 @@ def update_stats():
     for key, value in text_class_compose.items():
         data[key] = value
     with open(file, 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4, sort_keys=True)
 
 def run():
     parse_home()
 
+def rename_files():
+    print('Renaming texts files...')
+    #Set the work directory to the texts folder
+    os.chdir(os.path.join(ASSETS_PATH,'texts'))
+    #Get current and new filenames from json file
+    data = json.load(open(build_path(['texts'],'text_class_analysis','json'),encoding='utf-8'))
+    #from data.items() get the current filename (key) and change it to the new filename (value['new_name'])
+    for key, value in data.items():
+        cn = key + '.txt'
+        nn = value['new_name'] + '.txt'
+        os.rename(cn,nn)
+
+    print('Renaming audios files...')
+    #Repeat the process for audios
+    os.chdir(os.path.join(ASSETS_PATH,'audios'))
+    data = json.load(open(build_path(['texts'],'text_class_analysis','json'),encoding='utf-8'))
+    for key, value in data.items():
+        cn = key + '.mp3'
+        nn = value['new_name'] + '.mp3'
+        os.rename(cn,nn)
+
 if __name__ == '__main__':
-    print('Starting scrapper...')
-    # print(os.path.dirname(__file__))
-    # print(os.path.join(os.path.dirname(__file__),'../../assets/texts'))
-    run()
+    #run()
+    #rename_files()
+    pass

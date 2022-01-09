@@ -6,9 +6,9 @@ from app import main
 
 def get_prefix_to_app() -> List[str]:
     paths = [route.__getattribute__('path').replace("/","") for route in main.app.routes]
-    # print("="*30)
-    # print(paths)
-    # print("="*30)
+    print("="*30)
+    print(paths)
+    print("="*30)
     return paths
 
 def is_path_from_prefix(path:str) -> bool:
@@ -25,7 +25,7 @@ router = APIRouter()
 async def get_frontend(path: str):
     # print("-"*40)
     valid = not(is_path_from_prefix(path))
-    # print(f'Frontend required: {path} - valid: {str(valid)}')
+    print(f'Frontend required: {path} - valid: {str(valid)}')
     if valid:
         if path == "":
             path = "index.html"
