@@ -6,10 +6,6 @@
 # Text = string
 
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from uuid import uuid4
-
-from class_schema import Class_
 
 class TextBase(BaseModel):
     line_number: int
@@ -20,6 +16,6 @@ class TextCreate(TextBase):
 
 class Text(TextBase):
     id: str
-    class_: Class_
+    class_id: str = Field(..., min_length=36)
     class Config:
         orm_mode = True

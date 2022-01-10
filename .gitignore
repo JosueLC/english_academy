@@ -6,3 +6,4 @@ assets
 .mp3
 .json
 .env
+sql_app.db

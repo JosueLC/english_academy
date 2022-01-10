@@ -8,11 +8,9 @@
 # Texts = list of Text objects
 
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from uuid import uuid4
+from typing import Optional
 
-from course_schema import Course
-from texts_schema import Text
+from app.core.schemas.text_schema import Text
 
 class ClassBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
@@ -23,8 +21,8 @@ class ClassCreate(ClassBase):
 
 class Class_(ClassBase):
     id: str
-    course: Course
+    course_id: str = Field(..., min_length=36)
     audio: str
-    texts: List[Text] = Field(default_factory=list)
+    texts: list[Text] = Field(default_factory=list)
     class Config:
         orm_mode = True

@@ -7,11 +7,12 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.data.database import Base, engine
+from app.core.data.database import engine
+from app.core.models import initialize_sql
 from app.api.v1.api import api_router
 from app.frontend import router as front_route
 
-Base.metadata.create_all(bind=engine)
+initialize_sql(engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f'{settings.API_V1_STR}/openapi.json'

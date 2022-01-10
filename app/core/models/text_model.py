@@ -6,14 +6,15 @@
 # Text = string
 
 from uuid import uuid4
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey, Integer
 from sqlalchemy.orm import relationship
-from app.core.data.database import Base
+from app.core.models import Base
 
 class Text_model(Base):
     __tablename__ = 'texts'
     id = Column(String(36), primary_key=True, default=str(uuid4()))
     class_id = Column(String(36), ForeignKey('classes.id'))
-    class_ = relationship('Class_model', back_populates='texts')
-    line_number = Column(int, nullable=False)
+    line_number = Column(Integer, nullable=False)
     text = Column(String(255), nullable=False)
+    
+    class_ = relationship('Class_model', back_populates='texts')
