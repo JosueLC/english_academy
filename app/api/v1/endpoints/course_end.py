@@ -15,7 +15,7 @@ def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     db_course = course_crud.get_course_by_name(db, course.name)
     if db_course:
         raise HTTPException(status_code=400, detail="Course already registered")
-    return course_crud.create_course(db=db, course=CourseCreate)
+    return course_crud.create_course(db=db, course=course)
 
 @router.get("/",response_model=list[Course])
 def read_courses(skip: int= 0, limit: int = 100, db: Session = Depends(get_db)):

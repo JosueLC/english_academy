@@ -7,12 +7,13 @@
 # Audio = url string to audio file
 # Texts = list of Text objects
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import Optional
 
-from app.core.schemas.text_schema import Text
+from .meta import baseSchema
+from .text_schema import Text
 
-class ClassBase(BaseModel):
+class ClassBase(baseSchema):
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, min_length=1, max_length=255)
 

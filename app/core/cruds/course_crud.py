@@ -14,7 +14,7 @@ def get_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Course_model).offset(skip).limit(limit).all()
 
 def create_course(db: Session, course: CourseCreate):
-    db_course = Course_model(**course.dict())
+    db_course = Course_model(name=course.name, description = course.description, level = course.level)
     db.add(db_course)
     db.commit()
     db.refresh(db_course)

@@ -5,9 +5,11 @@
 # Line number = int
 # Text = string
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-class TextBase(BaseModel):
+from .meta import baseSchema
+
+class TextBase(baseSchema):
     line_number: int
     text: str
 
