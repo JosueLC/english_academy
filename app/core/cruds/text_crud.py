@@ -15,3 +15,10 @@ def create_text(db: Session, text: TextCreate):
     db.commit()
     db.refresh(db_text)
     return db_text
+
+def exists(db: Session, class_id: str, line_number: int):
+    db_text = db.query(Text_model).filter(
+        Text_model.class_id == class_id,
+        Text_model.line_number == line_number
+    ).first()
+    return not (db_text is None)

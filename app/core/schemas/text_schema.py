@@ -14,10 +14,9 @@ class TextBase(baseSchema):
     text: str
 
 class TextCreate(TextBase):
-    pass
+    class_id: str = Field(..., min_length=36)
 
 class Text(TextBase):
     id: str
-    class_id: str = Field(..., min_length=36)
     class Config:
         orm_mode = True

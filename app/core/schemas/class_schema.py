@@ -18,12 +18,11 @@ class ClassBase(baseSchema):
     description: Optional[str] = Field(None, min_length=1, max_length=255)
 
 class ClassCreate(ClassBase):
-    pass
-
-class Class_(ClassBase):
-    id: str
     course_id: str = Field(..., min_length=36)
-    audio: str
+    audio: str = Field(..., min_length=5)
+
+class Class_(ClassCreate):
+    id: str
     texts: list[Text] = Field(default_factory=list)
     class Config:
         orm_mode = True
