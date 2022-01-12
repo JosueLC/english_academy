@@ -44,7 +44,7 @@ def parse_home():
                 course_name = course[1][0].text_content()
             else:
                 course_name = course[0][1].text_content()
-            print('>> Parsing course: {}'.format(course_name))
+            sys.stdout.write('\n>> Parsing course: {}\n'.format(course_name))
             visited_links.append(link_url)
             parse_course(link_url,course_name)
             update_stats()
@@ -52,6 +52,7 @@ def parse_home():
 def parse_course(url:str,course_name:str):
     classes = get_parsed_html(url,xpaths.XPATH_LINK_TO_CLASSES)
     classes = sorted(classes,key=lambda x: x.attrib['href'])
+    progress = 1
     for link in classes:
         #Check if the link finishes with index(number).htm using regex.
         #if regex is ok, call again parse_course with the joined url to the link
@@ -63,6 +64,8 @@ def parse_course(url:str,course_name:str):
                 if not parse_class(full_url):
                     #print('recursive: {}'.format(full_url))
                     parse_course(full_url,course_name)
+                sys.stdout.write('\rScrapped {} links of {}.'.format(progress,len(classes)))
+                progress +=1
         except Exception as e:
             print(e.with_traceback(sys.exc_info()[2]))
             print('link: {}'.format(link))
@@ -177,5 +180,5 @@ def rename_files():
 
 if __name__ == '__main__':
     #run()
-    #rename_files()
-    pass
+    rename_files()
+    #pass
