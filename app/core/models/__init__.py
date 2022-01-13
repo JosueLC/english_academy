@@ -1,5 +1,5 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
-from .meta import Base
+from .meta import Base, uuid_generator
 
 from .course_model import Course_model
 from .class_model import Class_model

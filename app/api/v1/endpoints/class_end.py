@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.data.database import get_db
-from app.core.schemas.class_schema import ClassCreate, Class_
+from app.core.schemas.class_schema import ClassCreate, Class_, Class_Out
 from app.core.cruds import class_crud, course_crud
 
 router = APIRouter(
@@ -21,7 +21,7 @@ def create_class(classs:ClassCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Course parent not found")
     return class_crud.create_class(db=db, class_=classs)
 
-@router.get("/course/{course_id}",response_model=list[Class_])
+@router.get("/course/{course_id}",response_model=list[Class_Out])
 def read_classes_by_curse(course_id: str, db: Session = Depends(get_db)):
     db_course = course_crud.get_course(db, course_id)
     if db_course:

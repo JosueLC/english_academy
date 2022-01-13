@@ -5,14 +5,13 @@
 # Line number = int
 # Text = string
 
-from uuid import uuid4
 from sqlalchemy import Column, String, ForeignKey, Integer
 from sqlalchemy.orm import relationship
-from app.core.models import Base
+from app.core.models import Base, uuid_generator
 
 class Text_model(Base):
     __tablename__ = 'texts'
-    id = Column(String(36), primary_key=True, default=str(uuid4()))
+    id = Column(String(36), primary_key=True, default=uuid_generator)
     class_id = Column(String(36), ForeignKey('classes.id'))
     line_number = Column(Integer, nullable=False)
     text = Column(String(255), nullable=False)

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.data.database import get_db
-from app.core.schemas.course_schema import CourseCreate, Course
+from app.core.schemas.course_schema import CourseCreate, Course, CourseOut
 from app.core.cruds import course_crud
 
 router = APIRouter(
@@ -18,7 +18,7 @@ def create_course(course: CourseCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Course already registered")
     return course_crud.create_course(db=db, course=course)
 
-@router.get("/",response_model=list[Course])
+@router.get("/",response_model=list[CourseOut],response_model_exclude_unset=True)
 def read_courses(skip: int= 0, limit: int = 100, db: Session = Depends(get_db)):
     return course_crud.get_courses(db=db,skip=skip,limit=limit)
 

@@ -5,14 +5,13 @@
 # Description = string
 # Classes = list of Class objects
 
-from uuid import uuid4
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
-from app.core.models import Base
+from app.core.models import Base, uuid_generator
 
 class Course_model(Base):
     __tablename__ = 'courses'
-    id = Column(String(36), primary_key=True, default=str(uuid4()))
+    id = Column(String(36), primary_key=True, default=uuid_generator)
     name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=True)
     level = Column(Integer, nullable=False)

@@ -13,11 +13,19 @@ from .class_schema import Class_
 
 class CourseBase(baseSchema):
     name: str = Field(..., min_length=5, max_length=255)
-    description: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field('.', min_length=1, max_length=255)
     level:int = Field(...)
 
 class CourseCreate(CourseBase):
     pass
+
+class CourseOut(baseSchema):
+    id: str
+    name: str
+    description: str
+    level:int
+    class Config:
+        orm_mode = True
 
 class Course(CourseBase):
     id: str

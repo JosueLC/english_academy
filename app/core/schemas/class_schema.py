@@ -26,3 +26,10 @@ class Class_(ClassCreate):
     texts: list[Text] = Field(default_factory=list)
     class Config:
         orm_mode = True
+
+class Class_Out(baseSchema):
+    id: str
+    name: str
+    course_id: str
+    class Config:
+        orm_mode = True

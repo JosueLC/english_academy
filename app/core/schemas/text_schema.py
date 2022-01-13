@@ -20,3 +20,8 @@ class Text(TextBase):
     id: str
     class Config:
         orm_mode = True
+
+class CorpusText(baseSchema):
+    count: int
+    class Config:
+        orm_mode = True

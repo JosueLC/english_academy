@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.data.database import get_db
-from app.core.schemas.text_schema import TextCreate, Text
+from app.core.schemas.text_schema import TextCreate, Text, CorpusText
 from app.core.cruds import text_crud, class_crud
 
 router = APIRouter(
@@ -20,6 +20,13 @@ def create_text(text:TextCreate, db: Session = Depends(get_db)):
     db_class = class_crud.get_class(db,text.class_id)
     if db_class:
         return text_crud.create_text(db=db,text=text)
+    raise HTTPException(status_code=404, detail="Class parent not found")
+
+@router.post("/corpus",response_model=CorpusText)
+def create_corpus(corpus:list[TextCreate], db: Session = Depends(get_db)):
+    db_class = class_crud.get_class(db,corpus[0].class_id)
+    if db_class:
+        return {'count':text_crud.create_corpus(db=db,corpus=corpus)}
     raise HTTPException(status_code=404, detail="Class parent not found")
 
 @router.get("/{class_id}", response_model=list[Text])
