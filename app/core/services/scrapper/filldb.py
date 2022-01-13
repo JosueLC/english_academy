@@ -47,7 +47,7 @@ def post_class(name: str, course_id:str) -> str:
         return obj['id']
     return ''
 
-def post_text(corpus: list[str], class_id: str):
+def post_text(corpus: list[str], class_id: str) -> int:
     db_corpus = [
         {'line_number':i,
          'text': corpus[i],
@@ -56,7 +56,7 @@ def post_text(corpus: list[str], class_id: str):
     ]
     req = post_data(urlbase+'/texts/corpus',db_corpus)
     if req.status_code == 200:
-        obj = json.loads(req.text)[0]
+        obj = json.loads(req.text)['count']
         return obj
     print(req.text)
     return 0
