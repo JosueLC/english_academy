@@ -1,27 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component } from '@angular/core';
+import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { Card } from 'src/app/interfaces/card';
 import { Course } from 'src/app/interfaces/course';
-import { CourseService } from 'src/app/services/course.service';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
 
-  course_list: Course[] = [];
+export class HomeComponent {
+  cards: Observable<Card[]> | undefined;
+  /** Based on the screen size, switch from standard to one column per row */
   
-  constructor(
-    private courseService:CourseService
-  ) { }
+  getCards(data:Course[]): Observable<Card[]>{
+    const list = data.map(item=>{
+      const card:Card = {id:item.id,title:item.name,cols:1,rows:1};
+      return card;
+    })
+    return of(list);
+  };
 
-  getCourses(): void {
-    this.courseService.getCourses().subscribe(courses => this.course_list = courses)
-  }
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private route: ActivatedRoute
+    ) {}
 
   ngOnInit(): void {
-    this.getCourses();
+    this.route.data.subscribe((response:any)=>{
+      this.cards = this.getCards(response.courses);
+    });
   }
-
 }
