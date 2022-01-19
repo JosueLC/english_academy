@@ -6,12 +6,12 @@ import { CourseService } from "src/app/services/course.service";
 
 
 @Injectable({ providedIn:'root'})
-export class HomeResolver implements Resolve<Observable<Course[]>>{
+export class CourseResolver implements Resolve<Observable<Course>>{
     constructor(
         private courseService: CourseService
     ){}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        return this.courseService.getCourses();
+        return this.courseService.getCourse(String(route.paramMap.get('id')));
     }
 }

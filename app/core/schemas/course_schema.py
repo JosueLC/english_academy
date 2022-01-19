@@ -9,7 +9,7 @@ from pydantic import Field
 from typing import Optional
 
 from .meta import baseSchema
-from .class_schema import Class_
+from .class_schema import Class_Out
 
 class CourseBase(baseSchema):
     name: str = Field(..., min_length=5, max_length=255)
@@ -29,6 +29,6 @@ class CourseOut(baseSchema):
 
 class Course(CourseBase):
     id: str
-    classes: list[Class_] = Field(default_factory=list)
+    classes: list[Class_Out] = Field(default_factory=list)
     class Config:
         orm_mode = True

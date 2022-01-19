@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-
-import { Course } from '../interfaces/course';
+import { Clase } from '../interfaces/clase';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +15,11 @@ export class ClassService {
     private http: HttpClient
   ) { }
 
-  getClasses(course_id: string): Observable<Course[]> {
+  getClasses(course_id: string): Observable<Clase[]> {
     const entrypoint = this.url + course_id;
-    return this.http.get<Course[]>(entrypoint)
+    return this.http.get<Clase[]>(entrypoint)
       .pipe(
-        catchError(this.handleError<Course[]>('getCourses',[]))
+        catchError(this.handleError<Clase[]>('getCourses',[]))
       );
   }
 

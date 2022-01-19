@@ -23,6 +23,13 @@ export class CourseService {
       );
   }
 
+  getCourse(id: string): Observable<Course> {
+    return this.http.get<Course>(this.url + id)
+      .pipe(
+        catchError(this.handleError<Course>('getCourse',undefined))
+      );
+  }
+
   private handleError<T>(operation = 'operation', result?: T){
     return (error:any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
