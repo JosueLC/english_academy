@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { from, Observable, of } from 'rxjs';
 import { Card } from 'src/app/interfaces/card';
 import { Course } from 'src/app/interfaces/course';
+import { BaseComponent } from '../base/base.component';
 
 
 @Component({
@@ -12,53 +13,31 @@ import { Course } from 'src/app/interfaces/course';
   styleUrls: ['./home.component.css']
 })
 
-export class HomeComponent {
-  courses: Course[] = [];
-  cards: Observable<Card[]> | undefined;
-
-  getCards(data:Course[],breakpoint:string): Observable<Card[]>{
-    if(breakpoint == Breakpoints.Small){
-      return of(data.map(item =>{
-        const card:Card={id:item.id, title:item.description, cols:3, rows:1}
-        return card
-      }));
-    }
-    else if(breakpoint == Breakpoints.Medium){
-      return of(data.map(item =>{
-        const card:Card={id:item.id, title:item.description, cols:item.level, rows:1}
-        return card
-      }));
-    }
-    else {
-      return of(data.map(item =>{
-        const card:Card={id:item.id, title:item.description, cols:1, rows:1}
-        return card
-      }));
-    }
-  };
-
+export class HomeComponent extends BaseComponent {
+  
   constructor(
-    private breakpointObserver: BreakpointObserver,
-    private route: ActivatedRoute
-    ) {
-      this.route.data.subscribe((response:any)=>{
-        this.courses = response.courses;
-      });
-      this.breakpointObserver.observe([
-        Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large
-      ]).subscribe(result => {
-        if(this.courses.length > 0){
-          for (const query of Object.keys(result.breakpoints)) {
-            console.log("Eval query: " + query);
-            if (result.breakpoints[query]) {
-              this.cards = this.getCards(this.courses,query);
-              console.log("Apply query: " + query);
-            }
-          }
-        }
-      });
-    }
+    public breakpointObserver: BreakpointObserver,
+    public route: ActivatedRoute
+  ) {
+    super(breakpointObserver,route)
+  }
 
   ngOnInit(): void {
+    //Get courses from server with route. After that, convert to basecards
+    this.route.data.subscribe((response:any) =>{
+      this.baseItems = response.courses;
+      //console.log(this.baseItems);
+      this.baseCards = of(this.baseItems.map(course => this.courseToCard(course)));
+    });
+    
+  }
+
+  courseToCard(course:Course): Card {
+    const card: Card = {
+      id : course.id,
+      title: course.name,
+      description: "{description: '" + course.description + "'}",
+    }
+    return card;
   }
 }

@@ -1,17 +1,17 @@
 <div class="grid-container">
   <h1 class="mat-h1">Courses</h1>
   <mat-grid-list cols="3" rowHeight="150px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+    <mat-grid-tile *ngFor="let course of baseCards | async" [colspan]="isViewSmall ? '3' : '1'" [rowspan]="1">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            {{card.title | uppercase}}
+            {{course.title | uppercase}}
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
         </mat-card-content>
         <mat-card-actions>
-          <a mat-raised-button color="primary" routerLink="/course/{{card.id}}">Go</a>
+          <a mat-raised-button color="primary" routerLink="/course/{{course.id}}">Go</a>
         </mat-card-actions>
       </mat-card>
     </mat-grid-tile>

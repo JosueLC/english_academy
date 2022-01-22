@@ -16,10 +16,18 @@ export class ClassService {
   ) { }
 
   getClasses(course_id: string): Observable<Clase[]> {
-    const entrypoint = this.url + course_id;
+    const entrypoint = this.url + 'course/'+ course_id;
     return this.http.get<Clase[]>(entrypoint)
       .pipe(
         catchError(this.handleError<Clase[]>('getCourses',[]))
+      );
+  }
+
+  getClass(class_id: string): Observable<Clase> {
+    const entrypoint = this.url + class_id;
+    return this.http.get<Clase>(entrypoint)
+      .pipe(
+        catchError(this.handleError<Clase>('getClass'))
       );
   }
 

@@ -1,33 +1,23 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { Clase } from 'src/app/interfaces/clase';
+import { BaseComponent } from '../base/base.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-clase',
   templateUrl: './clase.component.html',
   styleUrls: ['./clase.component.css']
 })
-export class ClaseComponent {
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'Card 1', cols: 1, rows: 1 },
-          { title: 'Card 2', cols: 1, rows: 1 },
-          { title: 'Card 3', cols: 1, rows: 1 },
-          { title: 'Card 4', cols: 1, rows: 1 }
-        ];
-      }
+export class ClaseComponent{
+  clase!: Clase;
 
-      return [
-        { title: 'Card 1', cols: 2, rows: 1 },
-        { title: 'Card 2', cols: 1, rows: 1 },
-        { title: 'Card 3', cols: 1, rows: 2 },
-        { title: 'Card 4', cols: 1, rows: 1 }
-      ];
-    })
-  );
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private route: ActivatedRoute
+  ) { 
+  }
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  ngOnInit(): void {}
 }
