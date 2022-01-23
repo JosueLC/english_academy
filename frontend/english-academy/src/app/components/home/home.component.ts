@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ActivatedRoute } from '@angular/router';
-import { from, Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Card } from 'src/app/interfaces/card';
 import { Course } from 'src/app/interfaces/course';
 import { BaseComponent } from '../base/base.component';

@@ -3,7 +3,7 @@
 
 import { CorpusText } from "./corpustext";
 
-export interface Clase{
+export interface Lesson{
     id: string;
     name: string;
     course_id: string;
@@ -12,7 +12,7 @@ export interface Clase{
     texts:CorpusText[]
 }
 
-export interface ClaseSimple{
+export interface LessonSimple{
     id: string;
     name: string;
     course_id: string;

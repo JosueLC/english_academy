@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { BaseComponent } from '../base/base.component';
-import { Course } from 'src/app/interfaces/course';
-import { ClaseSimple } from 'src/app/interfaces/clase';
-import { Card } from 'src/app/interfaces/card';
 import { of } from 'rxjs';
+import { BaseComponent } from '../base/base.component';
+import { LessonSimple } from 'src/app/interfaces/lesson';
+import { Course } from 'src/app/interfaces/course';
+import { Card } from 'src/app/interfaces/card';
 
 
 @Component({
@@ -23,7 +23,7 @@ export class CourseComponent extends BaseComponent {
     })
   }
 
-  classToCard(c:ClaseSimple): Card {
+  classToCard(c:LessonSimple): Card {
     const card: Card = {
       id : c.id,
       title: c.name,

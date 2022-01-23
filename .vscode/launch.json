@@ -25,6 +25,19 @@
                 "--reload"
             ],
             "jinja": false
+        },
+        //Node angular Ng Serve
+        {
+            "name": "Node: Angular: Ng Serve",
+            "type": "node",
+            "request": "launch",
+            "program": "node_modules/.bin/ng",
+            "args": [
+                "serve"
+            ],
+            "cwd": "frontend/english-academy/",
+            "console": "integratedTerminal",
+            "preLaunchTask": "uvicorn"
         }
     ]
 }

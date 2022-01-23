@@ -1,0 +1,27 @@
+<div class="grid-container">
+    <mat-grid-tile-header>
+        <h1 class="mat-h1">Lesson {{ lesson?.description }}</h1>
+        <audio class="audio-player" controls>
+            <source src="http://localhost:8000{{ lesson?.audio }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <button mat-button color="primary" (click)="showTexts()">Show</button>
+    </mat-grid-tile-header>    
+    <mat-grid-list cols="3" rowHeight="150px">
+        <mat-grid-tile *ngFor="let sentence of lesson.texts" [colspan]="isViewSmall ? '3' : '1'" [rowspan]="1">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>
+                        {{sentence.line_number + 1}}
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <input/>
+                </mat-card-content>
+                <mat-card-content *ngIf="showHideText">
+                    <p>{{sentence.text}}</p>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

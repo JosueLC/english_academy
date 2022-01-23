@@ -6,12 +6,12 @@
 // level: int
 // classes: optional list of class object
 
-import { ClaseSimple } from "./clase";
+import { LessonSimple } from "./lesson";
 
 export interface Course{
     id: string;
     name: string;
     description: string;
     level: number;
-    classes:ClaseSimple[]
+    classes:LessonSimple[]
 }

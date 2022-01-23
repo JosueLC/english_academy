@@ -11,14 +11,10 @@ import { HomeComponent } from './components/home/home.component';
 import { HomeResolver } from './components/home/home.resolver';
 import { CourseComponent } from './components/course/course.component';
 import { CourseResolver } from './components/course/course.resolver';
-import { ClaseComponent } from './components/clase/clase.component';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatCardModule } from '@angular/material/card';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { LayoutModule } from '@angular/cdk/layout';
 import { BaseComponent } from './components/base/base.component';
+import { LessonComponent } from './components/lesson/lesson.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -26,8 +22,8 @@ import { BaseComponent } from './components/base/base.component';
     AppComponent,
     HomeComponent,
     CourseComponent,
-    ClaseComponent,
-    BaseComponent
+    BaseComponent,
+    LessonComponent
   ],
   imports: [
     HttpClientModule,
@@ -35,12 +31,8 @@ import { BaseComponent } from './components/base/base.component';
     BrowserAnimationsModule,
     MaterialModule,
     AppRoutingModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    LayoutModule
+    LayoutModule,
+    ReactiveFormsModule
   ],
   providers: [
     HomeResolver,
